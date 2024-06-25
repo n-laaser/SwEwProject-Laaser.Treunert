@@ -1,2 +1,4 @@
-# SwEwProject-Laaser.Treunert-
-Repository für das Software Entwicklungs Projekt 2024, Mathematik Aufgaben Generator
+# SwEwProject-Laaser.Treunert
+Software Entwicklung Projekt 2024 | Nikolas Laaser, Lennart Treunert
+
+## Mathematik Aufgaben Generator
