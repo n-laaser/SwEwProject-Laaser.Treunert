@@ -7,10 +7,12 @@ using System.Collections;
 using System.Text;
 using Color = ScottPlot.Color;
 
+
 namespace GraphPlotting
 {
     public partial class Form1 : Form
     {
+        
         //Grad der Funktion
         int degree;
         //rationale Nullstellen ja/nein
@@ -19,6 +21,8 @@ namespace GraphPlotting
         double[] zeros = { 1, 2, 3, 4, 5 };
         //ArrayList mit nicht in der Lösung angegebenen Nullstellen
         ArrayList missingzeros = new ArrayList();
+
+        Polynomial function = new Polynomial(false, 5);
 
         //Notwendige Funktionen für ScottPlot
         public Form1()
@@ -64,17 +68,7 @@ namespace GraphPlotting
 
 
         //Ab hier Labels,Buttons etc.
-        private void Form1_Load(object sender, EventArgs e)
-        {
-            double[] x_value = { -2, -1, 0, 1.5, 3, 4, 5 };
-            double[] y_value = { -1, 0, 4, 0, 9, 12, 15 };
-            var v1 = ploti.Plot.Add.VerticalLine(0);
-            var v2 = ploti.Plot.Add.HorizontalLine(0);
-            v1.Color = Colors.Black;
-            v2.Color = Colors.Black;
-            ploti.Plot.Add.Scatter(x_value, y_value);
-            ploti.Refresh();
-        }
+        
         //Auswahl des Funktionsgrades durch die ComboBox
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -97,11 +91,13 @@ namespace GraphPlotting
             checkBox.Enabled = false;
             LoadFunction.Enabled = false;
 
+            function = new Polynomial(rationalzeros, degree);
+
+            zeros = function.Zeros;
             //Wenn "Lade Funktion" gedrückt wurde, wird Funktion geladen und angezeigt
             TestLabel.Text = degree.ToString();//Zur Ausgabe von Werten, nur testweise
 
-            string SuperScript = ToSuperScript(5);
-            Function.Text = ("f(x) = x" + SuperScript + " + 3x + 6x + 7");
+            Function.Text = function.funcstring;
             FunctionLabel.Visible = true;
             Function.Visible = true;
             AnswerLabel.Visible = true;
@@ -139,6 +135,27 @@ namespace GraphPlotting
                 default:
                     break;
             }
+        }
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
+            double x_min = -20;
+            double x_max = 20;
+            double step = 0.01;
+            double[] x_value = new double[4000];
+            double[] y_value = new double[4000];
+            for (int i = 0; x_min <= x_max; x_min += step ,i++)
+            {
+                x_value[i] = x_min;
+                y_value[i] = function.F(x_min);
+            }
+            TestLabel.Text = x_value[0].ToString();
+            var v1 = ploti.Plot.Add.VerticalLine(0);
+            var v2 = ploti.Plot.Add.HorizontalLine(0);
+            v1.Color = Colors.Black;
+            v2.Color = Colors.Black;
+            ploti.Plot.Add.Scatter(x_value, y_value);
+            ploti.Refresh();
         }
 
         private void SolutionButton_Click(object sender, EventArgs e)

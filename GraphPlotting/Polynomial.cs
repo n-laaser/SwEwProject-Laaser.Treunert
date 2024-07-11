@@ -1,5 +1,4 @@
 ﻿using System.Reflection.Emit;
-using System.Runtime.InteropServices.Marshalling;
 
 public class Polynomial{
     Random rnd = new Random();
@@ -107,7 +106,7 @@ public class Polynomial{
                 coeffs[5] =1;
                 return coeffs;
             
-            default: return [];
+            default: return coeffs;
         }
     }
     string makeFuncstring(double[] coeffs){
@@ -163,14 +162,5 @@ public class Polynomial{
 
         return Superscript;
     }
- class Program{
-    static void Main(){
-        Polynomial poly = new Polynomial(false,3);
-        Console.WriteLine(poly.funcstring+": funcstring");
-        Console.WriteLine(poly.zeros.Length);
-        Console.WriteLine(poly.coeffs.Length);
-        Console.WriteLine(poly.F(1).ToString()+" "+poly.F(0).ToString());
-    }
- }
 
 }
