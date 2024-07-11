@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            formsPlot1 = new ScottPlot.WinForms.FormsPlot();
+            ploti = new ScottPlot.WinForms.FormsPlot();
             ComboBox = new ComboBox();
             label1 = new Label();
             label2 = new Label();
@@ -48,14 +48,14 @@
             AnswerLabel = new Label();
             SuspendLayout();
             // 
-            // formsPlot1
+            // ploti
             // 
-            formsPlot1.DisplayScale = 1F;
-            formsPlot1.Location = new Point(19, 296);
-            formsPlot1.Name = "formsPlot1";
-            formsPlot1.Size = new Size(488, 266);
-            formsPlot1.TabIndex = 0;
-            formsPlot1.Visible = false;
+            ploti.DisplayScale = 1F;
+            ploti.Location = new Point(19, 296);
+            ploti.Name = "ploti";
+            ploti.Size = new Size(488, 266);
+            ploti.TabIndex = 0;
+            ploti.Visible = false;
             // 
             // ComboBox
             // 
@@ -246,7 +246,7 @@
             Controls.Add(label2);
             Controls.Add(label1);
             Controls.Add(ComboBox);
-            Controls.Add(formsPlot1);
+            Controls.Add(ploti);
             Name = "Form1";
             Text = "Nullstellenberechnung";
             Load += Form1_Load;
@@ -256,7 +256,7 @@
 
         #endregion
 
-        private ScottPlot.WinForms.FormsPlot formsPlot1;
+        private ScottPlot.WinForms.FormsPlot ploti;
         private ComboBox ComboBox;
         private Label label1;
         private Label label2;

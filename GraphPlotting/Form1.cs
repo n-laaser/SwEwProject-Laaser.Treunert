@@ -1,7 +1,11 @@
 using Microsoft.VisualBasic.ApplicationServices;
 using ScottPlot;
+using ScottPlot.Colormaps;
+using ScottPlot.Plottables;
 using ScottPlot.Rendering.RenderActions;
+using System.Collections;
 using System.Text;
+using Color = ScottPlot.Color;
 
 namespace GraphPlotting
 {
@@ -13,7 +17,8 @@ namespace GraphPlotting
         bool rationalzeros;
         //Nullstellen unserer Funktion
         double[] zeros = { 1, 2, 3, 4, 5 };
-        double[] missingzeros = new double[5];//Nullstellen, die nicht in der Lösung angegeben wurden
+        //ArrayList mit nicht in der Lösung angegebenen Nullstellen
+        ArrayList missingzeros = new ArrayList();
 
         //Notwendige Funktionen für ScottPlot
         public Form1()
@@ -40,12 +45,13 @@ namespace GraphPlotting
 
         //Anzeigen ob die Eingaben in den Textfeldern den korrekten Nullstellen entspricht (richtig/falsch)
         public void AnswerInZeros(TextBox t_box)
-        {
+        {   
             for (int i = 0; i < zeros.Length; i++)
             {
                 if (t_box.Text == zeros[i].ToString())
                 {
                     t_box.BackColor = System.Drawing.Color.FromArgb(0, 255, 0);//richtige Antwort = Grün
+                    missingzeros.Remove(t_box.Text);
                     //Nachdem die Antwort in Zeros gefunden wurde, Schleife verlassen
                     break;
                 }
@@ -62,10 +68,12 @@ namespace GraphPlotting
         {
             double[] x_value = { -2, -1, 0, 1.5, 3, 4, 5 };
             double[] y_value = { -1, 0, 4, 0, 9, 12, 15 };
-            formsPlot1.Plot.Add.HorizontalLine(0);
-            formsPlot1.Plot.Add.VerticalLine(0);
-            formsPlot1.Plot.Add.Scatter(x_value, y_value);
-            formsPlot1.Refresh();
+            var v1 = ploti.Plot.Add.VerticalLine(0);
+            var v2 = ploti.Plot.Add.HorizontalLine(0);
+            v1.Color = Colors.Black;
+            v2.Color = Colors.Black;
+            ploti.Plot.Add.Scatter(x_value, y_value);
+            ploti.Refresh();
         }
         //Auswahl des Funktionsgrades durch die ComboBox
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
@@ -79,7 +87,7 @@ namespace GraphPlotting
         {
             rationalzeros = checkBox.Checked;
         }
-        //Grüß Gott
+
 
         private void button1_Click(object sender, EventArgs e)
         {
@@ -98,6 +106,7 @@ namespace GraphPlotting
             Function.Visible = true;
             AnswerLabel.Visible = true;
             SolutionButton.Visible = true;
+            
 
             //Je nach angegebenem Grad wird nur eine bestimmte Menge an Lösungen zugelassen
             switch (degree)
@@ -136,10 +145,18 @@ namespace GraphPlotting
         {
             //Wenn "Lösung anzeigen" gedrückt wurde
             Solution.Visible = true;
-            formsPlot1.Visible = true;
+            ploti.Visible = true;
             RestartButton.Visible = true;
-            
-            //Array.Copy(zeros, missingzeros, zeros.Length);
+
+            //Sicherstellen Solution.Text nur "Nullstellen" anzeigt
+            Solution.Text = "Noch fehlende Nullstellen: ";
+            //Zeros in Missingzeros kopieren
+            missingzeros.Clear();  
+            foreach(double i in zeros)
+            {
+                missingzeros.Add(i.ToString());
+            }
+
             //Um nur mögliche Lösungfelder anzusteuern
             switch (degree)
             {
@@ -171,8 +188,12 @@ namespace GraphPlotting
                 default:
                     break;
             }
+            //Alle nicht selbst angegebenen Nullstellen anzeigen 
+            foreach(string s in missingzeros)
+            {
+                Solution.Text += " "+s;
+            }
 
-            Solution.Text = "";
 
         }
         //Neustarten der Application durch den "Nochmal" Button
