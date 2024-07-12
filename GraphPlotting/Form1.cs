@@ -1,9 +1,11 @@
+using Microsoft.VisualBasic;
 using Microsoft.VisualBasic.ApplicationServices;
 using ScottPlot;
 using ScottPlot.Colormaps;
 using ScottPlot.Plottables;
 using ScottPlot.Rendering.RenderActions;
 using System.Collections;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using Color = ScottPlot.Color;
 
@@ -19,18 +21,22 @@ namespace GraphPlotting
         bool rationalzeros;
         //Nullstellen unserer Funktion
         double[] zeros = { 1, 2, 3, 4, 5 };
-        //ArrayList mit nicht in der Lösung angegebenen Nullstellen
+        //ArrayList mit nicht in der Lï¿½sung angegebenen Nullstellen
         ArrayList missingzeros = new ArrayList();
-
-        Polynomial function = new Polynomial(false, 5);
-
-        //Notwendige Funktionen für ScottPlot
+        public Polynomial polynom;
+        public Polynomial Polynom{
+            get{return polynom;}
+            set{polynom = value;}
+        }
+        double[] x_array =new double[8000];
+        double[] y_array= new double[8000];
+        //Notwendige Funktionen fï¿½r ScottPlot
         public Form1()
         {
             InitializeComponent();
         }
 
-        //Sorgt für die Darstellung von Exponenten (ist sonst nur bis hoch 3 möglich)
+        //Sorgt fï¿½r die Darstellung von Exponenten (ist sonst nur bis hoch 3 mï¿½glich)
         public string ToSuperScript(int number)
         {
             if (number == 0 || number == 1)
@@ -54,7 +60,7 @@ namespace GraphPlotting
             {
                 if (t_box.Text == zeros[i].ToString())
                 {
-                    t_box.BackColor = System.Drawing.Color.FromArgb(0, 255, 0);//richtige Antwort = Grün
+                    t_box.BackColor = System.Drawing.Color.FromArgb(0, 255, 0);//richtige Antwort = Grï¿½n
                     missingzeros.Remove(t_box.Text);
                     //Nachdem die Antwort in Zeros gefunden wurde, Schleife verlassen
                     break;
@@ -76,7 +82,7 @@ namespace GraphPlotting
             degree = Convert.ToInt32(ComboBox.Items[ComboBox.SelectedIndex]);
 
         }
-        //Eine Checkbox, welche angibt ob man rationale Nullstellen haben möchte 
+        //Eine Checkbox, welche angibt ob man rationale Nullstellen haben mï¿½chte 
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
             rationalzeros = checkBox.Checked;
@@ -86,25 +92,32 @@ namespace GraphPlotting
         private void button1_Click(object sender, EventArgs e)
         {
             //Nach Eingabe von Grad,ganzen/rationalen Nullstellen
-            //und drücken von "Lade Funktion" kann man alle drei Objekte nicht mehr verändern
+            //und drï¿½cken von "Lade Funktion" kann man alle drei Objekte nicht mehr verï¿½ndern
             ComboBox.Enabled = false;
             checkBox.Enabled = false;
             LoadFunction.Enabled = false;
 
-            function = new Polynomial(rationalzeros, degree);
-
-            zeros = function.Zeros;
-            //Wenn "Lade Funktion" gedrückt wurde, wird Funktion geladen und angezeigt
+            polynom = new Polynomial(rationalzeros, degree);
+            zeros = polynom.Zeros;
+            //Wenn "Lade Funktion" gedrï¿½ckt wurde, wird Funktion geladen und angezeigt
             TestLabel.Text = degree.ToString();//Zur Ausgabe von Werten, nur testweise
 
-            Function.Text = function.funcstring;
+            Function.Text = polynom.funcstring;
             FunctionLabel.Visible = true;
             Function.Visible = true;
             AnswerLabel.Visible = true;
             SolutionButton.Visible = true;
             
+            double x_min = -40;
+            double x_max = 40;
+            double step = 0.01;
+            for (int i = 0; x_min <= x_max; x_min += step ,i++)
+            {
+                x_array[i] = x_min;
+                y_array[i] = polynom.F(x_min);
+            }
 
-            //Je nach angegebenem Grad wird nur eine bestimmte Menge an Lösungen zugelassen
+            //Je nach angegebenem Grad wird nur eine bestimmte Menge an Lï¿½sungen zugelassen
             switch (degree)
             {
                 case 1:
@@ -138,17 +151,8 @@ namespace GraphPlotting
         }
         private void Form1_Load(object sender, EventArgs e)
         {
-
-            double x_min = -20;
-            double x_max = 20;
-            double step = 0.01;
-            double[] x_value = new double[4000];
-            double[] y_value = new double[4000];
-            for (int i = 0; x_min <= x_max; x_min += step ,i++)
-            {
-                x_value[i] = x_min;
-                y_value[i] = function.F(x_min);
-            }
+            double[] x_value = x_array;
+            double[] y_value = y_array;
             TestLabel.Text = x_value[0].ToString();
             var v1 = ploti.Plot.Add.VerticalLine(0);
             var v2 = ploti.Plot.Add.HorizontalLine(0);
@@ -160,7 +164,7 @@ namespace GraphPlotting
 
         private void SolutionButton_Click(object sender, EventArgs e)
         {
-            //Wenn "Lösung anzeigen" gedrückt wurde
+            //Wenn "Lï¿½sung anzeigen" gedrï¿½ckt wurde
             Solution.Visible = true;
             ploti.Visible = true;
             RestartButton.Visible = true;
@@ -174,7 +178,7 @@ namespace GraphPlotting
                 missingzeros.Add(i.ToString());
             }
 
-            //Um nur mögliche Lösungfelder anzusteuern
+            //Um nur mï¿½gliche Lï¿½sungfelder anzusteuern
             switch (degree)
             {
                 case 1:
