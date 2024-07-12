@@ -1,20 +1,26 @@
-﻿using System.Reflection.Emit;
-using System.Runtime.InteropServices.Marshalling;
+﻿using System.CodeDom;
+using System.Reflection.Emit;
 
 public class Polynomial{
-    Random rnd = new Random();
+    public Random rnd = new Random();
     bool rationalzeros;
     int degree;
     double[] coeffs;
     double[] zeros;
     public string funcstring;
-
+    double rndfactor;
     public Polynomial(bool rationalzeros_n, int degree_n){
         rationalzeros = rationalzeros_n; 
         degree = degree_n; 
         zeros = genZeros(rationalzeros_n,degree_n);
+        rndfactor = Convert.ToDouble(rnd.Next(-5,5))/Convert.ToDouble(rnd.Next(1,5));
+        Console.WriteLine(rndfactor);
+            if(rndfactor==0){
+                rndfactor=1;
+            }
         coeffs = calcCoeffs(zeros);
         funcstring = makeFuncstring(coeffs);
+        
         }
     
     public bool Rationalzeros{
@@ -38,47 +44,49 @@ public class Polynomial{
     double[] genZeros(bool rationalzeros_n, int degree_n){
         double[] zeros= new double[degree_n]; // Länge angegeben weil dynamisches array irgendwie nicht funktioniert
         for(int i=0; i<degree_n; i++){
-                zeros[i] = rnd.Next(-20,20);
-                Console.WriteLine(zeros[i]+": genZerosTest"); // Zufallszahlen für Nullstelle generieren (Zähler)
-            }
+                zeros[i] = rnd.Next(-10,10); // Zufallszahlen für Nullstelle generieren (Zähler)
+                Console.WriteLine(zeros[i].ToString()+":genZerosTestNat");
         if (rationalzeros_n==true){
-            for(int i=0; i>degree_n; i++){
-                zeros[i]/=rnd.Next(1,20); // Nenner generieren (falls zahl rational sein soll)
-            }
+                zeros[i]/=rnd.Next(1,10); // Nenner generieren (falls zahl rational sein soll)
         }
+        Console.WriteLine(zeros[i].ToString()+":genZerosTestRat");
+        
+        }
+        
         //eventuell Sortieralgorithmus auf array anwenden
         return zeros;
     }
-    static double[] calcCoeffs(double[] zeros){
+    double[] calcCoeffs(double[] zeros){
         double[] coeffs= new double[zeros.Length+1];
         double a;
         double b;
         double c;
         double d;
         double e;
+        double factor = this.rndfactor;
         switch(zeros.Length){ // SwitchCase um Koeffizienten für unterschiedliche Grade zu berechnen
             case 1:
                 a = zeros[0];
-                coeffs[0]=-a;
-                coeffs[1]=1;
+                coeffs[0]=factor*-a;
+                coeffs[1]=factor*1;
                 return coeffs;
             
             case 2:
                 a = zeros[0];
                 b = zeros[1];
-                coeffs[0]=a*b;
-                coeffs[1]=(-a-b);
-                coeffs[2]=1;
+                coeffs[0]=factor*(a*b);
+                coeffs[1]=factor*(-a-b);
+                coeffs[2]=factor*1;
                 return coeffs;
             
             case 3:
                 a = zeros[0];
                 b = zeros[1];
                 c = zeros[2];
-                coeffs[0]=-a*b*c;
-                coeffs[1]=(a*b+a*c+c*b);
-                coeffs[2]=-a-b-c;
-                coeffs[3]=1;
+                coeffs[0]=factor*(-a*b*c);
+                coeffs[1]=factor*(a*b+a*c+c*b);
+                coeffs[2]=factor*(-a-b-c);
+                coeffs[3]=factor*1;
                 return coeffs;
             
             case 4:
@@ -86,11 +94,11 @@ public class Polynomial{
                 b = zeros[1];
                 c = zeros[2];
                 d = zeros[3];
-                coeffs[0]=a*b*c*d;
-                coeffs[1]=a*c*(-b-d)+b*d*(-a-c);
-                coeffs[2]=a*(b+c+d)+b*(d+c)+c*d;
-                coeffs[3]=-a-b-c-d;
-                coeffs[4]=1;
+                coeffs[0]=factor*(a*b*c*d);
+                coeffs[1]=factor*(a*c*(-b-d)+b*d*(-a-c));
+                coeffs[2]=factor*(a*(b+c+d)+b*(d+c)+c*d);
+                coeffs[3]=factor*(-a-b-c-d);
+                coeffs[4]=factor*1;
                 return coeffs;
             
             case 5:
@@ -99,15 +107,15 @@ public class Polynomial{
                 c = zeros[2];
                 d = zeros[3];
                 e = zeros[4];
-                coeffs[0] =-a*b*c*d*e;
-                coeffs[1] =a*b*(c*d+c*e+d*e)+c*d*e*(a+b);
-                coeffs[2] =a*b*(-c-d-e)+c*d*(a-b-e)+c*e*(-a-b)+d*e*(-a-b);
-                coeffs[3] =a*(b+c+d+e)+b*(c+d+e)+c*(d+e);
-                coeffs[4] =-a-b-c-d-e;
-                coeffs[5] =1;
+                coeffs[0] =factor*(-a*b*c*d*e);
+                coeffs[1] =factor*(a*b*(c*d+c*e+d*e)+c*d*e*(a+b));
+                coeffs[2] =factor*(a*b*(-c-d-e)+c*d*(a-b-e)+c*e*(-a-b)+d*e*(-a-b));
+                coeffs[3] =factor*(a*(b+c+d+e)+b*(c+d+e)+c*(d+e));
+                coeffs[4] =factor*(-a-b-c-d-e);
+                coeffs[5] =factor*1;
                 return coeffs;
             
-            default: return [];
+            default: return coeffs;
         }
     }
     string makeFuncstring(double[] coeffs){
@@ -130,9 +138,9 @@ public class Polynomial{
     }
 
     public double F(double x){
-        double y=1;
+        double y=this.rndfactor;
         for(int i=0;i<zeros.Length;i++){
-        y *= x-this.zeros[i];
+        y =y* (x-this.zeros[i]);
         }
         return y;
     }
@@ -163,14 +171,5 @@ public class Polynomial{
 
         return Superscript;
     }
- class Program{
-    static void Main(){
-        Polynomial poly = new Polynomial(false,3);
-        Console.WriteLine(poly.funcstring+": funcstring");
-        Console.WriteLine(poly.zeros.Length);
-        Console.WriteLine(poly.coeffs.Length);
-        Console.WriteLine(poly.F(1).ToString()+" "+poly.F(0).ToString());
-    }
- }
 
 }
