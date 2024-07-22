@@ -2,20 +2,20 @@
 using System.Reflection.Emit;
 
 public class Polynomial{
-    public Random rnd = new Random();
-    bool rationalzeros;
-    int degree;
-    double[] coeffs;
-    double[] zeros;
-    public string funcstring;
-    double rndfactor;
+    public Random rnd = new Random(); // Seed für das generieren des Zufälligen faktors und der Nullstellen
+    bool rationalzeros; // Gibt an ob die Nullstellen des Polynoms ganzzahlig (false) oder rational (true) [Eingabe durch Benutzer]
+    int degree; // Gibt den Grad des Polynoms und somit auch die Anzahl der nullstellen an [Eingabe durch Benutzer]
+    double rndfactor; // Zufälliger Faktor, damit Koeffizient von x^degree auch ungleich 1 sein kann (Nullstellen bleiben unverändert)
+    double[] zeros; // Array der Nullstellen (Reihenfolge unwichtig, zeros.length == degree )
+    double[] coeffs; // Array der Koeffizienten f(x)=a*x^2+b*x+c aufsteigende Reihenfolge {c,b,a}  
+    public string funcstring; // das polynom als string (zur Ausgabe im GUI) 
+    
     public Polynomial(bool rationalzeros_n, int degree_n){
         rationalzeros = rationalzeros_n; 
         degree = degree_n; 
         zeros = genZeros(rationalzeros_n,degree_n);
-        rndfactor = Convert.ToDouble(rnd.Next(-5,5))/Convert.ToDouble(rnd.Next(1,5));
-        Console.WriteLine(rndfactor);
-            if(rndfactor==0){
+        rndfactor = Convert.ToDouble(rnd.Next(-5,5))/Convert.ToDouble(rnd.Next(1,5)); 
+            if(rndfactor==0){ // 0*f(x) ist trivial
                 rndfactor=1;
             }
         coeffs = calcCoeffs(zeros);
@@ -31,40 +31,39 @@ public class Polynomial{
         get{return degree;}
         set{degree=value;}
     }
-    public double[] Coeffs{
-        get{return coeffs;}
-    }
     public double[] Zeros{
         get{return zeros;}
         }
+    public double[] Coeffs{
+        get{return coeffs;}
+    }
     public string Funcstring{
         get{return funcstring;}
     }
     
     double[] genZeros(bool rationalzeros_n, int degree_n){
-        double[] zeros= new double[degree_n]; // Länge angegeben weil dynamisches array irgendwie nicht funktioniert
+        double[] zeros= new double[degree_n]; // statisches initialisieren des Arrays, da es als dynamisches nicht funktioniert hat 
         for(int i=0; i<degree_n; i++){
                 zeros[i] = rnd.Next(-10,10); // Zufallszahlen für Nullstelle generieren (Zähler)
-                Console.WriteLine(zeros[i].ToString()+":genZerosTestNat");
+                //Console.WriteLine(zeros[i].ToString()+":genZerosTestNat");
         if (rationalzeros_n==true){
-                zeros[i]/=rnd.Next(1,10); // Nenner generieren (falls zahl rational sein soll)
+                zeros[i]/=rnd.Next(1,10); // Nenner generieren (falls Nullstelle rational sein soll)
         }
-        Console.WriteLine(zeros[i].ToString()+":genZerosTestRat");
+        //Console.WriteLine(zeros[i].ToString()+":genZerosTestRat"); 
         
         }
-        
-        //eventuell Sortieralgorithmus auf array anwenden
         return zeros;
     }
     double[] calcCoeffs(double[] zeros){
-        double[] coeffs= new double[zeros.Length+1];
+        double[] coeffs= new double[zeros.Length+1]; // Immer ein Koeffizient mehr als Nullstellen, deswegen hier statische initalisierung (und wegen selbigen Bug aus genZeros())
         double a;
         double b;
         double c;
         double d;
         double e;
-        double factor = this.rndfactor;
-        switch(zeros.Length){ // SwitchCase um Koeffizienten für unterschiedliche Grade zu berechnen
+        double factor = this.rndfactor; // zufälliger Skalierungsfaktor (ändert nichts an den Nullstellen)
+        switch(zeros.Length){ // SwitchCase um Koeffizienten für unterschiedliche Grade zu berechnen 
+                //(Formeln entsprechen ausmultplizierter Linearfaktorzerlegung * rndfactor: sodass coeffs[0]*x^0 und coeffs[n]*x^n; Anzahl der Linearfaktoren == degree == zeros.length)
             case 1:
                 a = zeros[0];
                 coeffs[0]=factor*-a;
@@ -126,7 +125,7 @@ public class Polynomial{
             }else if(coeffs[i]==-1){ // oder bei -1 nur ein "-" einfügen
                 funcstring += "-";
             }
-            if(coeffs[i]!=0 && coeffs[i]!=1 && coeffs[i]!=-1){// Koeffizient nur nötig wenn != 1,-1 oder 0
+            if(coeffs[i]!=0 && coeffs[i]!=1 && coeffs[i]!=-1){// Koeffizient als Zahl nur nötig wenn coeffs[i] != 1,-1 oder 0
                 funcstring += coeffs[i].ToString();// Koeffizient wird rechts an den bestehenden string addiert
             }
             if(coeffs[i]!=0 && i!=0){// x mit Exponent hinzufügen 
@@ -137,15 +136,15 @@ public class Polynomial{
         return funcstring;
     }
 
-    public double F(double x){
-        double y=this.rndfactor;
+    public double F(double x){ // Funktion um das Polynom von Form1 aus aufzurufen man schreibt: var poly = new Polynomial(rationalzeros, degree); poly.F(3) --> gibt den wert der generierten Funktion an der Stelle x=3 aus
+        double y=this.rndfactor; // zufälliger faktor
         for(int i=0;i<zeros.Length;i++){
         y =y* (x-this.zeros[i]);
         }
         return y;
     }
 
-    static private string ToSuperScript(int number) // Funktion um beliebige superscript nummern nutzen zu können
+    static private string ToSuperScript(int number) // Funktion um beliebige Superscript Zahlen als string nutzen zu können
        {
         if (number == 0 ||
             number == 1)
