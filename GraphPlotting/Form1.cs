@@ -1,61 +1,43 @@
-using Microsoft.VisualBasic;
-using Microsoft.VisualBasic.ApplicationServices;
 using ScottPlot;
-using ScottPlot.Colormaps;
-using ScottPlot.Plottables;
-using ScottPlot.Rendering.RenderActions;
 using System.Collections;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using Color = ScottPlot.Color;
 
 
 namespace GraphPlotting
 {
     public partial class Form1 : Form
     {
-        
+
         //Grad der Funktion
-        int degree;
+        private int degree;
+
         //rationale Nullstellen ja/nein
-        bool rationalzeros;
+        private bool rationalzeros;
+
         //Nullstellen unserer Funktion
-        double[] zeros = { 1, 2, 3, 4, 5 };
+        private double[] zeros;
+
         //ArrayList mit nicht in der L�sung angegebenen Nullstellen
-        ArrayList missingzeros = new ArrayList();
+        private ArrayList missingzeros = new ArrayList();
+
         public Polynomial polynom;
-        public Polynomial Polynom{
-            get{return polynom;}
-            set{polynom = value;}
+        public Polynomial Polynom
+        {
+            get { return polynom; }
+            set { polynom = value; }
         }
-        double[] x_array =new double[8000];
-        double[] y_array= new double[8000];
-        //Notwendige Funktionen f�r ScottPlot
+
+        //Notwendige Arrays f�r Funktionsplot
+        private double[] x_array = new double[20000];
+        private double[] y_array = new double[20000];
+
         public Form1()
         {
             InitializeComponent();
         }
 
-        //Sorgt f�r die Darstellung von Exponenten (ist sonst nur bis hoch 3 m�glich)
-        public string ToSuperScript(int number)
-        {
-            if (number == 0 || number == 1)
-                return "";
-            const string SuperscriptDigits = "\u2070\u00b9\u00b2\u00b3\u2074\u2075\u2076\u2077\u2078\u2079";
-            string Superscript = "";
-            if (number < 0)
-            {
-                //Adds superscript minus
-                Superscript = ((char)0x207B).ToString();
-                number *= -1;
-            }
-            Superscript += new string(number.ToString().Select(x => SuperscriptDigits[x - '0']).ToArray());
-            return Superscript;
-        }
-
         //Anzeigen ob die Eingaben in den Textfeldern den korrekten Nullstellen entspricht (richtig/falsch)
         public void AnswerInZeros(TextBox t_box)
-        {   
+        {
             for (int i = 0; i < zeros.Length; i++)
             {
                 if (t_box.Text == zeros[i].ToString())
@@ -74,7 +56,7 @@ namespace GraphPlotting
 
 
         //Ab hier Labels,Buttons etc.
-        
+
         //Auswahl des Funktionsgrades durch die ComboBox
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -98,20 +80,27 @@ namespace GraphPlotting
             LoadFunction.Enabled = false;
 
             polynom = new Polynomial(rationalzeros, degree);
-            zeros = polynom.Zeros;
-            //Wenn "Lade Funktion" gedr�ckt wurde, wird Funktion geladen und angezeigt
-            TestLabel.Text = degree.ToString();//Zur Ausgabe von Werten, nur testweise
 
+            //zeros sind die Nullstellen des Polynoms auf 3 Nachkommastellen gerundet
+            zeros = new double[polynom.Zeros.Length];
+            int index = 0;
+            foreach (double d in polynom.Zeros)
+            {
+                this.zeros[index] = Math.Round(d,3);
+                index++;
+            }
+
+            //Wenn "Lade Funktion" gedr�ckt wurde, wird Funktion geladen und angezeigt
             Function.Text = polynom.funcstring;
             FunctionLabel.Visible = true;
             Function.Visible = true;
             AnswerLabel.Visible = true;
             SolutionButton.Visible = true;
-            
-            double x_min = -40;
-            double x_max = 40;
+
+            double x_min = -100;
+            double x_max = 100;
             double step = 0.01;
-            for (int i = 0; x_min <= x_max; x_min += step ,i++)
+            for (int i = 0; x_min <= x_max; x_min += step, i++)
             {
                 x_array[i] = x_min;
                 y_array[i] = polynom.F(x_min);
@@ -153,7 +142,6 @@ namespace GraphPlotting
         {
             double[] x_value = x_array;
             double[] y_value = y_array;
-            TestLabel.Text = x_value[0].ToString();
             var v1 = ploti.Plot.Add.VerticalLine(0);
             var v2 = ploti.Plot.Add.HorizontalLine(0);
             v1.Color = Colors.Black;
@@ -172,8 +160,8 @@ namespace GraphPlotting
             //Sicherstellen Solution.Text nur "Nullstellen" anzeigt
             Solution.Text = "Noch fehlende Nullstellen: ";
             //Zeros in Missingzeros kopieren
-            missingzeros.Clear();  
-            foreach(double i in zeros)
+            missingzeros.Clear();
+            foreach (double i in zeros)
             {
                 missingzeros.Add(i.ToString());
             }
@@ -210,9 +198,9 @@ namespace GraphPlotting
                     break;
             }
             //Alle nicht selbst angegebenen Nullstellen anzeigen 
-            foreach(string s in missingzeros)
+            foreach (string s in missingzeros)
             {
-                Solution.Text += " "+s;
+                Solution.Text += " " + s;
             }
 
 
