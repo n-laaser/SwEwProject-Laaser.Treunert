@@ -124,8 +124,8 @@
                 e = zeros[4];
                 coeffs[0] = factor * (-a * b * c * d * e);
                 coeffs[1] = factor * (a * b * (c * d + c * e + d * e) + c * d * e * (a + b));
-                coeffs[2] = factor * (a * b * (-c - d - e) + c * d * (a - b - e) + c * e * (-a - b) + d * e * (-a - b));
-                coeffs[3] = factor * (a * (b + c + d + e) + b * (c + d + e) + c * (d + e));
+                coeffs[2] = factor * (a * b * (-c - d - e) + c * d * (-a - b - e) + c * e * (-a - b) + d * e * (-a - b));
+                coeffs[3] = factor * (a * (b + c + d + e) + b * (c + d + e) + c * (d + e) + d * e)
                 coeffs[4] = factor * (-a - b - c - d - e);
                 coeffs[5] = factor * 1;
                 return coeffs;
@@ -148,7 +148,7 @@
             }
             if (coeffs[i] != 0 && coeffs[i] != 1 && coeffs[i] != -1)
             {// Koeffizient als Zahl nur nötig wenn coeffs[i] != 1,-1 oder 0
-                funcstring += coeffs[i].ToString();// Koeffizient wird rechts an den bestehenden string addiert
+                funcstring += Math.Round(coeffs[i],5).ToString();// Koeffizient wird rechts an den bestehenden string addiert
             }
             if (coeffs[i] != 0 && i != 0)
             {// x mit Exponent hinzufügen 
