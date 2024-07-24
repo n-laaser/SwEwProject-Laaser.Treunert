@@ -39,7 +39,6 @@
             Solution = new Label();
             SolutionButton = new Button();
             RestartButton = new Button();
-            TestLabel = new Label();
             textBox1 = new TextBox();
             textBox2 = new TextBox();
             textBox3 = new TextBox();
@@ -164,15 +163,6 @@
             RestartButton.Visible = false;
             RestartButton.Click += RestartButton_Click;
             // 
-            // TestLabel
-            // 
-            TestLabel.AutoSize = true;
-            TestLabel.Location = new Point(393, 31);
-            TestLabel.Name = "TestLabel";
-            TestLabel.Size = new Size(27, 15);
-            TestLabel.TabIndex = 11;
-            TestLabel.Text = "Test";
-            // 
             // textBox1
             // 
             textBox1.Location = new Point(19, 213);
@@ -235,7 +225,6 @@
             Controls.Add(textBox3);
             Controls.Add(textBox2);
             Controls.Add(textBox1);
-            Controls.Add(TestLabel);
             Controls.Add(RestartButton);
             Controls.Add(SolutionButton);
             Controls.Add(Solution);
@@ -267,7 +256,6 @@
         private Label Solution;
         private Button SolutionButton;
         private Button RestartButton;
-        private Label TestLabel;
         private TextBox textBox1;
         private TextBox textBox2;
         private TextBox textBox3;
