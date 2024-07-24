@@ -125,7 +125,7 @@
                 coeffs[0] = factor * (-a * b * c * d * e);
                 coeffs[1] = factor * (a * b * (c * d + c * e + d * e) + c * d * e * (a + b));
                 coeffs[2] = factor * (a * b * (-c - d - e) + c * d * (-a - b - e) + c * e * (-a - b) + d * e * (-a - b));
-                coeffs[3] = factor * (a * (b + c + d + e) + b * (c + d + e) + c * (d + e) + d * e)
+                coeffs[3] = factor * (a * (b + c + d + e) + b * (c + d + e) + c * (d + e) + d * e);
                 coeffs[4] = factor * (-a - b - c - d - e);
                 coeffs[5] = factor * 1;
                 return coeffs;
