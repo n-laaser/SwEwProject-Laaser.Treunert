@@ -9,22 +9,39 @@ namespace GraphPlotting
 
         //Grad der Funktion
         private int degree;
+        public int Degree
+        {
+            get{return degree;}
+            set{degree=value;}
+        }
+        
 
         //rationale Nullstellen ja/nein
         private bool rationalzeros;
+        public bool Rationalzeros
+        {
+            get{return rationalzeros;}
+            set{rationalzeros=value;}
+        }
 
         //Nullstellen unserer Funktion
         private double[] zeros;
+        public double[] Zeros
+        {
+            get{return zeros;}
+            set{zeros=value;}
+        }
 
-        //ArrayList mit nicht in der L�sung angegebenen Nullstellen
-        private ArrayList missingzeros = new ArrayList();
-
+        //Polynom-Objekt
         public Polynomial polynom;
         public Polynomial Polynom
         {
             get { return polynom; }
             set { polynom = value; }
         }
+        
+        //ArrayList mit nicht in der L�sung angegebenen Nullstellen
+        private ArrayList missingzeros = new ArrayList();
 
         //Notwendige Arrays f�r Funktionsplot
         private double[] x_array = new double[20000];
