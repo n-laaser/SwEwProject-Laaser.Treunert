@@ -54,7 +54,7 @@
 
     private double[] genZeros(bool rationalzeros_n, int degree_n)
     {
-        double[] zeros = new double[degree_n]; // statisches initialisieren des Arrays, da es als dynamisches nicht funktioniert hat 
+        double[] zeros = new double[degree_n]; // initialisieren des Nullstellen-Arrays (Anzahl der Nullstellen = Grad der Funktion) 
         for (int i = 0; i < degree_n; i++)
         {
             zeros[i] = rnd.Next(-50, 50); // Zufallszahlen für Nullstelle generieren (Zähler)
@@ -70,7 +70,7 @@
     }
     private double[] calcCoeffs(double[] zeros)
     {
-        double[] coeffs = new double[zeros.Length + 1]; // Immer ein Koeffizient mehr als Nullstellen, deswegen hier statische initalisierung (und wegen selbigen Bug aus genZeros())
+        double[] coeffs = new double[zeros.Length + 1]; // Immer ein Koeffizient mehr als Nullstellen
         double a;
         double b;
         double c;
@@ -79,7 +79,7 @@
         double factor = this.rndfactor; // zufälliger Skalierungsfaktor (ändert nichts an den Nullstellen)
         switch (zeros.Length)
         { // SwitchCase um Koeffizienten für unterschiedliche Grade zu berechnen 
-          //(Formeln entsprechen ausmultplizierter Linearfaktorzerlegung * rndfactor: sodass coeffs[0]*x^0 und coeffs[n]*x^n; Anzahl der Linearfaktoren == degree == zeros.length)
+          //(Formeln entsprechen der ausmultiplizierter Linearfaktorzerlegung mal dem rndfactor: sodass coeffs[0]*x^0 und coeffs[n]*x^n; Anzahl der Linearfaktoren == degree == zeros.length)
             case 1:
                 a = zeros[0];
                 coeffs[0] = factor * -a;
@@ -168,7 +168,8 @@
         }
         return y;
     }
-
+// Funktion von StackOverflow Link: https://stackoverflow.com/questions/17704169/how-to-write-superscript-in-a-string-and-display-using-messagebox-show
+     
     static private string ToSuperScript(int number) // Funktion um beliebige Superscript Zahlen als string nutzen zu können
     {
         if (number == 0 ||
